@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feather Weather</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #333, #111);
+            color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .weather-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px; /* Reduced border radius */
+            padding: 25px; /* Reduced padding */
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6); /* Reduced shadow */
+            backdrop-filter: blur(8px); /* Reduced blur */
+            text-align: center;
+            width: 80%; /* Reduced width */
+            max-width: 350px; /* Reduced max width */
+        }
+
+        .search-box {
+            display: flex;
+            margin-bottom: 20px; /* Reduced margin */
+        }
+
+        .input-field {
+            flex-grow: 1;
+            padding: 10px 15px; /* Reduced padding */
+            border: none;
+            border-radius: 25px; /* Reduced border radius */
+            background: rgba(255, 255, 255, 0.1);
+            color: #eee;
+            font-size: 16px; /* Reduced font size */
+            outline: none;
+            margin-right: 10px; /* Reduced margin */
+        }
+
+        .search-button {
+            background: #eee;
+            color: #111;
+            border: none;
+            border-radius: 25px; /* Reduced border radius */
+            padding: 10px 20px; /* Reduced padding */
+            cursor: pointer;
+            font-size: 16px; /* Reduced font size */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .search-button:hover {
+            background-color: #ddd;
+            transform: scale(1.05);
+        }
+
+        .weather-icon {
+            width: 120px; /* Reduced icon size */
+            margin-bottom: 15px; /* Reduced margin */
+            filter: grayscale(100%);
+        }
+
+        .temperature {
+            font-size: 2.5em; /* Reduced font size */
+            font-weight: 600;
+            margin-bottom: 5px; /* Reduced margin */
+        }
+
+        .description {
+            font-size: 1em; /* Reduced font size */
+            margin-bottom: 20px; /* Reduced margin */
+            text-transform: capitalize;
+            color: #ccc;
+        }
+
+        .details {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .detail-item i {
+            font-size: 1.5em; /* Reduced icon size */
+            margin-bottom: 5px; /* Reduced margin */
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="weather-container">
+        <h1>Feather Weather</h1>
+        <div class="search-box">
+            <input type="text" id="location" class="input-field" placeholder="Enter location">
+            <button class="search-button" onclick="getWeather()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <div id="weather-data">
+            <img id="weather-icon" class="weather-icon" src="https://openweathermap.org/img/wn/04d@2x.png" alt="Weather Icon">
+            <p id="temperature" class="temperature">0°C</p>
+            <p id="description" class="description">Overcast Clouds</p>
+            <div class="details">
+                <div class="detail-item">
+                    <i class="fas fa-tint"></i>
+                    <span id="humidity">Humidity: 0%</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-wind"></i>
+                    <span id="wind-speed">Wind: 0 km/h</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function getWeather() {
+            const location = document.getElementById('location').value;
+            const apiKey = 'cb716d600dcd0f478d5a2bfaea2c6aa1'; // Replace with your API key
+
+            if (!location) {
+                alert('Please enter a location.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`);
+                const data = await response.json();
+
+                if (data.cod === 200) {
+                    document.getElementById('temperature').textContent = `${Math.round(data.main.temp)}°C`;
+                    document.getElementById('description').textContent = data.weather[0].description;
+                    document.getElementById('humidity').textContent = `Humidity: ${data.main.humidity}%`;
+                    document.getElementById('wind-speed').textContent = `Wind: ${data.wind.speed} km/h`;
+                    document.getElementById('weather-icon').src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+                } else {
+                    alert('Location not found.');
+                }
+            } catch (error) {
+                console.error('Error fetching weather data:', error);
+                alert('Error fetching weather data.');
+            }
+        }
+    </script>
+</body>
+</html>
